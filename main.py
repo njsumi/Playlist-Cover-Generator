@@ -3,6 +3,7 @@ import os
 import base64
 import json
 from requests import post, get
+import openai
 
 load_dotenv()
 
@@ -127,17 +128,43 @@ avg_tempo = sum(tempo)/len(tempo)
 avg_time_signature = sum(time_signature)/len(time_signature)
 avg_valence = sum(valence)/len(valence)
 
-print("acousticness: ", avg_acousticness)
-print("danceability: ", avg_danceability)
-print("energy: ", avg_energy)
-print("instrumentalness: ", avg_instrumentalness)
-print("key: ", avg_key)
-print("liveness: ", avg_liveness)
-print("mode: ", avg_mode)
-print("speechiness: ", avg_speechiness)
-print("tempo: ", avg_tempo)
-print("time signature: ", avg_time_signature)
-print("valence: ", avg_valence)
+# print("acousticness: ", avg_acousticness)
+# print("danceability: ", avg_danceability)
+# print("energy: ", avg_energy)
+# print("instrumentalness: ", avg_instrumentalness)
+# print("key: ", avg_key)
+# print("liveness: ", avg_liveness)
+# print("mode: ", avg_mode)
+# print("speechiness: ", avg_speechiness)
+# print("tempo: ", avg_tempo)
+# print("time signature: ", avg_time_signature)
+# print("valence: ", avg_valence)
+
+prompt = """in one line, give a pinterest search prompt for a playlist cover for a playlist with an average acousticness of {avg_acousticness} (range: 0-1), danceability of {avg_danceability} range: 0-1), energy of {avg_energy} (range: 0-1), instrumentalness of {avg_instrumentalness} (range: 0-1), key of {avg_key} (range: -1-11), liveness of {avg_liveness} (range: 0-1), mode of {avg_mode}, speechiness of {avg_speechiness} (range: 0-1), tempo of {avg_tempo} bpm, time signature of {avg_time_signature} (range: 3-7), and valence {avg_valence} (range: 0-1).""".format(avg_acousticness=avg_acousticness, avg_danceability=avg_danceability, 
+                                                                            avg_energy=avg_energy, avg_instrumentalness=avg_instrumentalness, avg_key=avg_key, 
+                                                                            avg_liveness=avg_liveness, avg_mode=avg_mode, avg_speechiness=avg_speechiness, 
+                                                                            avg_tempo=avg_tempo, avg_time_signature=avg_time_signature, avg_valence=avg_valence)
+
+#print(prompt); 
+
+openai.api_key = os.getenv("API_KEY")
+
+def get_openai_response(prompt):  
+  result = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+      {
+        "role": "user",
+        "content": prompt
+      }
+    ]
+  )
+    
+  response_content = result.choices[0].message.content
+  return response_content
+
+response = get_openai_response(prompt)
+print(response)
 
 
 # for index, track in enumerate(tracks):
