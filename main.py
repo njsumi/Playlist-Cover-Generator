@@ -31,27 +31,6 @@ def get_token():
 def get_authorization_header(token):
     return {"Authorization": "Bearer " + token}
 
-def get_artist(token, artist_name):
-    url = "https://api.spotify.com/v1/search"
-    headers = get_authorization_header(token)
-    query = f"?q={artist_name}&type=artist&limit=1" #gives first artist that pops up when searching artist name
-
-    query_url = url + query
-    result = get(query_url, headers=headers)
-    json_result = json.loads(result.content)["artists"]["items"] #just gives us the individual artist
-    if len(json_result) == 0:
-        print("No artist with this name exists.")
-        return None
-    
-    return json_result[0]
-
-def get_songs_by_artist(token, artist_id):
-    url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?country=KR"
-    headers = get_authorization_header(token)
-    result = get(url, headers=headers)
-    json_result = json.loads(result.content)["tracks"] 
-    return json_result
-
 def get_playlist_tracks(token, playlist_id):
     url = f"https://api.spotify.com/v1/playlists/{playlist_id}"
     headers = get_authorization_header(token)
@@ -67,8 +46,10 @@ def get_tracks_audio_features(token, track_ids):
     json_result = json.loads(result.content)
     return json_result
 
-
 token = get_token()
+playlist_url = "https://open.spotify.com/playlist/3BMylbkttS9hqjOsqoXwJT?si=0686e92cbe6345dd"
+playlist_id = playlist_url[34:56]
+
 tracks = get_playlist_tracks(token, "3BMylbkttS9hqjOsqoXwJT") # ?si=860de0e89be048bc
 #print(tracks)
 
@@ -140,7 +121,7 @@ avg_valence = sum(valence)/len(valence)
 # print("time signature: ", avg_time_signature)
 # print("valence: ", avg_valence)
 
-prompt = """in one line, give a pinterest search prompt for a playlist cover for a playlist with an average acousticness of {avg_acousticness} (range: 0-1), danceability of {avg_danceability} range: 0-1), energy of {avg_energy} (range: 0-1), instrumentalness of {avg_instrumentalness} (range: 0-1), key of {avg_key} (range: -1-11), liveness of {avg_liveness} (range: 0-1), mode of {avg_mode}, speechiness of {avg_speechiness} (range: 0-1), tempo of {avg_tempo} bpm, time signature of {avg_time_signature} (range: 3-7), and valence {avg_valence} (range: 0-1).""".format(avg_acousticness=avg_acousticness, avg_danceability=avg_danceability, 
+prompt = """in three to eight words, give a pinterest search prompt for a playlist cover for a playlist with an average acousticness of {avg_acousticness} (range: 0-1), danceability of {avg_danceability} range: 0-1), energy of {avg_energy} (range: 0-1), instrumentalness of {avg_instrumentalness} (range: 0-1), key of {avg_key} (range: -1-11), liveness of {avg_liveness} (range: 0-1), mode of {avg_mode}, speechiness of {avg_speechiness} (range: 0-1), tempo of {avg_tempo} bpm, time signature of {avg_time_signature} (range: 3-7), and valence {avg_valence} (range: 0-1).""".format(avg_acousticness=avg_acousticness, avg_danceability=avg_danceability, 
                                                                             avg_energy=avg_energy, avg_instrumentalness=avg_instrumentalness, avg_key=avg_key, 
                                                                             avg_liveness=avg_liveness, avg_mode=avg_mode, avg_speechiness=avg_speechiness, 
                                                                             avg_tempo=avg_tempo, avg_time_signature=avg_time_signature, avg_valence=avg_valence)
@@ -163,20 +144,14 @@ def get_openai_response(prompt):
   response_content = result.choices[0].message.content
   return response_content
 
-response = get_openai_response(prompt)
-print(response)
+#convert promt to lowercase and spaces are %20
+response = get_openai_response(prompt).lower()
+new_response = ""
+for i in response:
+    if i == " ":
+        new_response += "%20"
+    else:
+        new_response += i
 
+#print(new_response)
 
-# for index, track in enumerate(tracks):
-#     track_name = track['track']['name']
-#     track_artist = [artist['name'] for artist in track['track']['artists']]
-#     artist = ', '.join(track_artist)
-#     print(f"{index+1}. {track_name} by {artist}")
-
-#result = get_artist(token, "IVE")
-#artist_name = result["name"]
-#artist_id = result["id"]
-#songs = get_songs_by_artist(token, artist_id)
-
-# for index, songs in enumerate(songs):
-#     print(f"{index+1}. {songs['name']}")
