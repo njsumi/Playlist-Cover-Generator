@@ -47,7 +47,8 @@ def get_tracks_audio_features(token, track_ids):
     return json_result
 
 token = get_token()
-playlist_url = "https://open.spotify.com/playlist/3BMylbkttS9hqjOsqoXwJT?si=0686e92cbe6345dd"
+
+playlist_url = input("Enter Spotify Playlist URL: ") #"https://open.spotify.com/playlist/3BMylbkttS9hqjOsqoXwJT?si=0686e92cbe6345dd"
 playlist_id = playlist_url[34:56]
 
 tracks = get_playlist_tracks(token, "3BMylbkttS9hqjOsqoXwJT") # ?si=860de0e89be048bc
@@ -109,6 +110,9 @@ avg_tempo = sum(tempo)/len(tempo)
 avg_time_signature = sum(time_signature)/len(time_signature)
 avg_valence = sum(valence)/len(valence)
 
+print("acousticness: ", avg_acousticness, " danceability: ", avg_danceability, " energy: ", avg_energy, " instrumentalness: ",avg_instrumentalness, " key: ",avg_key, 
+      " liveness: ", avg_liveness, " mode: ",avg_mode, " speechiness: ",avg_speechiness, " tempo: ",avg_tempo, " time signature: ",avg_time_signature, " valence: ",avg_valence)
+
 # print("acousticness: ", avg_acousticness)
 # print("danceability: ", avg_danceability)
 # print("energy: ", avg_energy)
@@ -146,12 +150,7 @@ def get_openai_response(prompt):
 
 #convert promt to lowercase and spaces are %20
 response = get_openai_response(prompt).lower()
-new_response = ""
-for i in response:
-    if i == " ":
-        new_response += "%20"
-    else:
-        new_response += i
+print(response)
 
-#print(new_response)
+
 
