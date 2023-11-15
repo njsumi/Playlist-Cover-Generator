@@ -9,7 +9,8 @@
     <h1>Welcome, {{name}}</h1>
 
     
-    <form>
+    <form method="post" action="{% url 'index' %}">
+        {% csrf_token %}
         <div>
             <label for="url">Spotify Playlist URL:</label>
             <input type="text" id="url" name="url"> 
@@ -18,7 +19,15 @@
         <br>
 
         <div>
-            <input type="Submit">
+            <input type="submit" value="Submit">
+        </div>
+
+        <br>
+
+        <div>
+            {% if image_url %}
+            <img src="{{ image_url }}" alt="Playlist Cover Image">
+            {% endif %}
         </div>
         
     </form>
