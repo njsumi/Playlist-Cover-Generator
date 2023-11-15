@@ -26,10 +26,12 @@ def index(request):
             playlist_id = playlist_url[34:56]
             audio_features = get_playlist_info(playlist_id)
             openai_prompt = generate_openai_prompt(audio_features)
-            print(openai_prompt)
-            openai_response = get_openai_response(openai_prompt)
+            prompt = openai_prompt[0]
+            colorscheme = openai_prompt[1]
+            emotion = openai_prompt[2]
+            openai_response = get_openai_response(prompt)
             print(openai_response)
-            image_response =  generate_dalle_image(openai_response)
+            image_response = generate_dalle_image(openai_response, colorscheme, emotion)
             print(image_response)
             context['image_url'] = image_response
             
@@ -54,13 +56,13 @@ def get_openai_response(prompt):
   translator = str.maketrans("", "", string.punctuation)
   return response_content.translate(translator)
 
-def generate_dalle_image(openai_reponse):
-    prompt = openai_reponse + " image in the style of Hayao Miyazaki"
+def generate_dalle_image(openai_reponse, colorscheme, emotion):
+    prompt = emotion + " " + openai_reponse + " in " + colorscheme + " colors and in the illustration style of Hayao Miyazaki"
     print(prompt)
     image_response = openai.Image.create(
         prompt=prompt,
         n=1,
-        size="1024x1024"
+        size="512x512"
     )
     image_url = image_response['data'][0]['url']
     return image_url
@@ -108,29 +110,44 @@ def generate_openai_prompt(audio_features):
     for track in audio_features['audio_features']:
         valence.append(track['valence'])
 
-    avg_acousticness = sum(acousticness)/len(acousticness)
-    avg_danceability = sum(danceability)/len(danceability)
-    avg_energy = sum(energy)/len(energy)
-    avg_instrumentalness = sum(instrumentalness)/len(instrumentalness)
+    acousticness = label_value(sum(acousticness)/len(acousticness))
+    danceability = label_value(sum(danceability)/len(danceability))
+    energy = label_value(sum(energy)/len(energy))
+    instrumentalness = label_value(sum(instrumentalness)/len(instrumentalness))
     #avg_key = sum(key)/len(key)
-    avg_liveness = sum(liveness)/len(liveness)
+    liveness = label_value(sum(liveness)/len(liveness))
     #avg_mode = sum(mode)/len(mode)
     #avg_speechiness = sum(speechiness)/len(speechiness)
-    avg_tempo = sum(tempo)/len(tempo)
-    avg_time_signature = sum(time_signature)/len(time_signature)
-    avg_valence = sum(valence)/len(valence)
+    tempo = sum(tempo)/len(tempo)
+    time_signature = sum(time_signature)/len(time_signature)
+    valence = label_value(sum(valence)/len(valence))
 
-    openai_prompt = "in 3-8 words, what image or object represents a song with " + label_value(avg_acousticness, "accousticness") + ", " + label_value(avg_danceability, "danceability") + ", " + label_value(avg_energy, "energy") + ", " + label_value(avg_instrumentalness, "instrumentalness") + ", " + label_value(avg_liveness, "liveness") + ", tempo of " + str(avg_tempo) + " bpm, time signature of " + str(avg_time_signature) + ", and " + label_value(avg_valence, "valence") + "?"
-    return openai_prompt
-
-
-def label_value(value, name):
-    if 0.8 <= value <= 1:
-        return "high " + name
-    elif 0.4 <= value:
-        return "medium " + name
+    if energy == "low":
+        colorscheme = "muted"
+    elif energy == "medium":
+        colorscheme = "pastel"
     else:
-        return "low " + name
+        colorscheme = "bright"
+    
+    if liveness == "low":
+        emotion = "serene"
+    elif liveness == "medium":
+        emotion = "comforting"
+    else:
+        emotion = "dynamic"
+
+    openai_prompt = "in 3-8 words, what image or object represents a song with " + acousticness + "accousticness , " + danceability + "danceability, " + energy + "energy, " + instrumentalness + "instrumentalness, " + liveness  + "liveness, tempo of " + str(tempo) + " bpm, time signature of " + str(time_signature) + ", and " + valence + "valence?"
+    
+    return openai_prompt, colorscheme, emotion
+
+
+def label_value(value):
+    if 0.8 <= value <= 1:
+        return "high"
+    elif 0.4 <= value:
+        return "medium"
+    else:
+        return "low"
 
 
 def get_token():
