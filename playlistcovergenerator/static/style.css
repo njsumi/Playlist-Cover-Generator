@@ -1,0 +1,187 @@
+body,
+html {
+    background-color: #F2EBE5
+}
+body {
+    padding-bottom: 50px;
+}
+
+
+h1.title {
+    width: 344px; 
+    height: 99px; 
+    left: 270px; 
+    top: 137px; 
+    position: absolute; 
+    color: #38455A; 
+    font-size: 48px;
+    font-family: PP Acma;
+    font-weight: 600; 
+    text-transform: uppercase; 
+    line-height: 50px; 
+    word-wrap: break-word
+}
+
+h2.subtitle {
+    width: 331.03px;
+    height: 147.31px; 
+    left: 745px; 
+    top: 253px; 
+    position: absolute; 
+    color: #38455A; 
+    font-size: 36px; 
+    font-family: PP Acma; 
+    font-weight: 600; 
+    text-transform: uppercase; 
+    line-height: 50px; 
+    word-wrap: break-word
+}
+
+h3.name {
+    width: 284px; 
+    height: 49px; 
+    left: 50px; 
+    top: 0px;
+    position: absolute;
+    color: #38455A; 
+    font-size: 24px; 
+    font-family: IBM Plex Mono; 
+    font-weight: 400; 
+    text-transform: uppercase; 
+    line-height: 50px; 
+    letter-spacing: 1.92px;
+    word-wrap: break-word
+}
+
+.textbox {
+    width: 575px;
+    height: 100px;
+    top: 756px;
+    left: 350px;
+    position: absolute;
+    color: #38455A; 
+    font-size: 48px; 
+    font-family: PP Acma; 
+    font-weight: 600; 
+    text-transform: uppercase; 
+    line-height: 50px; 
+    word-wrap: break-word;
+}
+
+/* @keyframes slider {
+    0% {
+        left: 0;
+    }
+    100% {
+        left: -100%;
+    }
+} */
+
+/* #slider {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    top: 400px;
+    position: absolute;
+} */
+
+/* #slider figure {
+    display: flex;
+    position: relative;
+    width: 100%; 
+    animation: slider 5s linear infinite;
+} */
+
+/* #slider figure img {
+    float: left;
+    width: 25%;
+    flex: 0 0 auto; 
+    margin-right: 3%;
+} */
+
+#img1 {
+    width: 256px; 
+    height: 256px; 
+    top: 453px; 
+    left: -213px;
+    position: absolute;
+}
+
+#img2 {
+    width: 198px; 
+    height: 188px; 
+    top: 520px; 
+    left: 77px;
+    position: absolute;
+}
+
+#img3 {
+    width: 303px; 
+    height: 282px; 
+    top: 438px;
+    left: 376px;
+    position: absolute;
+}
+
+#img4 {
+    width: 220px; 
+    height: 212px; 
+    top: 508px;
+    left: 705px;
+    position: absolute;
+}
+
+#img5 {
+    width: 256px; 
+    height: 256px;
+    top: 464px; 
+    left: 951px;
+    position: absolute;
+}
+
+#img6 {
+    width: 231px; 
+    height: 222px;
+    top: 498px; 
+    left: 1324px;
+    position: absolute; 
+}
+
+
+input[type=text] {
+    width: 645px; 
+    height: 393px; 
+    top: 943px;
+    left: 635px;
+    position: absolute;
+    background: #F2EBE5; 
+    border-radius: 12px; 
+    border: 2px #38455A solid
+}
+
+.generate {
+    width: 160px; 
+    height: 53px; 
+    top: 1258px;
+    left: 1103px;
+    position: absolute;
+    background: #F2EBE5; 
+    border-radius: 12px; 
+    border: 2px #38455A solid;
+    text-align: center; 
+    color: #38455A; 
+    font-size: 24px; 
+    font-family: IBM Plex Mono; 
+    font-weight: 400; 
+    text-transform: uppercase; 
+    line-height: 50px; 
+    letter-spacing: 1.92px; 
+    word-wrap: break-word;
+    transition-duration: 0.4s;
+}
+
+.generate:hover {
+    background-color: #38455A;
+    color: #F2EBE5;
+}
+

@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from dotenv import load_dotenv
+from time import sleep
 import os
 import base64
 import json
@@ -9,6 +10,8 @@ from requests import post, get
 import openai
 import string
 
+
+
 load_dotenv()
 
 client_id = os.getenv("CLIENT_ID")
@@ -16,10 +19,7 @@ client_secret = os.getenv("CLIENT_SECRET")
 
 # Create your views here.
 def index(request):
-    context = {
-        'name': 'Nina'
-    }
-
+    context = {}
     if request.method == 'POST':
         playlist_url = request.POST.get('url', '')
         if playlist_url:
@@ -29,15 +29,29 @@ def index(request):
             prompt = openai_prompt[0]
             colorscheme = openai_prompt[1]
             emotion = openai_prompt[2]
+
             openai_response = get_openai_response(prompt)
-            print(openai_response)
-            image_response = generate_dalle_image(openai_response, colorscheme, emotion)
-            print(image_response)
-            context['image_url'] = image_response
+            image_prompts = openai_response.split(",")
             
+            context['image_url_1'] = generate_dalle_image(image_prompts[0], colorscheme, emotion)
+            context['image_url_2'] = generate_dalle_image(image_prompts[1][1:], colorscheme, emotion)
+            context['image_url_3'] = generate_dalle_image(image_prompts[2], colorscheme, emotion)
+
+            return render(request, 'results.html', context)
+    return render(request, 'index.html')
 
 
-    return render(request, "index.html", context)
+def results(request):
+    image_url_1 = request.GET.get('image_url_1', '')
+    image_url_2 = request.GET.get('image_url_2', '')
+    image_url_3 = request.GET.get('image_url_3', '')
+
+    context = {
+        'image_url_1': image_url_1,
+        'image_url_2': image_url_2,
+        'image_url_3': image_url_3,
+    }
+    return render(request, 'results.html', context)
 
 
 def get_openai_response(prompt):  
@@ -53,8 +67,9 @@ def get_openai_response(prompt):
   )
     
   response_content = result.choices[0].message.content
-  translator = str.maketrans("", "", string.punctuation)
-  return response_content.translate(translator)
+#   translator = str.maketrans("", "", string.punctuation)
+  return response_content #.translate(translator)
+
 
 def generate_dalle_image(openai_reponse, colorscheme, emotion):
     prompt = emotion + " " + openai_reponse + " in " + colorscheme + " colors and in the illustration style of Hayao Miyazaki"
@@ -62,9 +77,10 @@ def generate_dalle_image(openai_reponse, colorscheme, emotion):
     image_response = openai.Image.create(
         prompt=prompt,
         n=1,
-        size="512x512"
+        size="256x256" #'256x256', '512x512', '1024x1024', '1024x1792', '1792x1024'
     )
     image_url = image_response['data'][0]['url']
+    print(image_url)
     return image_url
 
 
@@ -136,15 +152,15 @@ def generate_openai_prompt(audio_features):
     else:
         emotion = "dynamic"
 
-    openai_prompt = "in 3-8 words, what image or object represents a song with " + acousticness + "accousticness , " + danceability + "danceability, " + energy + "energy, " + instrumentalness + "instrumentalness, " + liveness  + "liveness, tempo of " + str(tempo) + " bpm, time signature of " + str(time_signature) + ", and " + valence + "valence?"
+    openai_prompt = "in 3-8 words, give me three different images or objects, separated by commas, that represent a song with " + acousticness + "accousticness , " + danceability + "danceability, " + energy + "energy, " + instrumentalness + "instrumentalness, " + liveness  + "liveness, tempo of " + str(tempo) + " bpm, time signature of " + str(time_signature) + ", and " + valence + "valence"
     
     return openai_prompt, colorscheme, emotion
 
 
 def label_value(value):
-    if 0.8 <= value <= 1:
+    if value >= 0.7:
         return "high"
-    elif 0.4 <= value:
+    elif value >= 0.5:
         return "medium"
     else:
         return "low"
