@@ -35,7 +35,7 @@ def index(request):
             
             context['image_url_1'] = generate_dalle_image(image_prompts[0], colorscheme, emotion)
             context['image_url_2'] = generate_dalle_image(image_prompts[1][1:], colorscheme, emotion)
-            context['image_url_3'] = generate_dalle_image(image_prompts[2], colorscheme, emotion)
+            context['image_url_3'] = generate_dalle_image(image_prompts[2][1:], colorscheme, emotion)
 
             return render(request, 'results.html', context)
     return render(request, 'index.html')
@@ -72,7 +72,8 @@ def get_openai_response(prompt):
 
 
 def generate_dalle_image(openai_reponse, colorscheme, emotion):
-    prompt = emotion + " " + openai_reponse + " in " + colorscheme + " colors and in the illustration style of Hayao Miyazaki"
+    translator = str.maketrans("", "", string.punctuation)
+    prompt = emotion.lower() + " " + openai_reponse.translate(translator).lower() + " in " + colorscheme.lower() + " colors and in the illustration style of Hayao Miyazaki"
     print(prompt)
     image_response = openai.Image.create(
         prompt=prompt,

@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COVER PALETTE</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}?1422585377">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}?142258537">
     <!-- <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" /> -->
 </head>
 
@@ -41,8 +41,9 @@
     
     <form method="post" action="{% url 'index' %}">
         {% csrf_token %}
-        <div>
-            <input type="text" id="url" name="url"> 
+        <div id="input-container">
+            <textarea id="url" name="url"></textarea>
+            <!-- <input type="text" id="url" name="url">  -->
         </div>
 
         <br>
@@ -55,6 +56,7 @@
         
     </form>
 
+    <div class="bottom"></div>
 
 
 </body>

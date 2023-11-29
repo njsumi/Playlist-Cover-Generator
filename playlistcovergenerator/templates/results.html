@@ -5,30 +5,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}?1422585377">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}?142258537">
     <title>COVER PALETTE</title>
 </head>
 <body>
     <div>
+        <h1 class="header">your   playlist   covers :</h1>
+    </div>
+    <div>
         {% if image_url_1 %}
-        <label for="img 1">Image 1!</label>
-        <img src="{{ image_url_1 }}" alt="Playlist Cover Image 1">
+        <img class="result-images" id="result1" src="{{ image_url_1 }}" alt="Playlist Cover Image 1">
         {% endif %}
     </div>
 
 
     <div>
         {% if image_url_2 %}
-        <label for="img 2">Image 2!</label>
-        <img src="{{ image_url_2 }}" alt="Playlist Cover Image 2">
+        <img class="result-images" id="result2" src="{{ image_url_2 }}" alt="Playlist Cover Image 2">
         {% endif %}
     </div>
 
 
     <div>
         {% if image_url_3 %}
-        <label for="img 3">Image 3!</label>
-        <img src="{{ image_url_3 }}" alt="Playlist Cover Image 3">
+        <img class="result-images" id="result3" src="{{ image_url_3 }}" alt="Playlist Cover Image 3">
         {% endif %}
     </div>
 </body>
