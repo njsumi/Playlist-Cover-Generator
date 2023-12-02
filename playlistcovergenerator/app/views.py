@@ -17,7 +17,6 @@ load_dotenv()
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
 
-# Create your views here.
 def index(request):
     context = {}
     if request.method == 'POST':
@@ -67,8 +66,7 @@ def get_openai_response(prompt):
   )
     
   response_content = result.choices[0].message.content
-#   translator = str.maketrans("", "", string.punctuation)
-  return response_content #.translate(translator)
+  return response_content
 
 
 def generate_dalle_image(openai_reponse, colorscheme, emotion):
@@ -78,7 +76,7 @@ def generate_dalle_image(openai_reponse, colorscheme, emotion):
     image_response = openai.Image.create(
         prompt=prompt,
         n=1,
-        size="256x256" #'256x256', '512x512', '1024x1024', '1024x1792', '1792x1024'
+        size="256x256" 
     )
     image_url = image_response['data'][0]['url']
     print(image_url)
@@ -132,12 +130,14 @@ def generate_openai_prompt(audio_features):
     energy = label_value(sum(energy)/len(energy))
     instrumentalness = label_value(sum(instrumentalness)/len(instrumentalness))
     #avg_key = sum(key)/len(key)
-    liveness = label_value(sum(liveness)/len(liveness))
+    #liveness = label_value(sum(liveness)/len(liveness))
     #avg_mode = sum(mode)/len(mode)
     #avg_speechiness = sum(speechiness)/len(speechiness)
     tempo = sum(tempo)/len(tempo)
     time_signature = sum(time_signature)/len(time_signature)
     valence = label_value(sum(valence)/len(valence))
+
+    print(acousticness, danceability, energy, instrumentalness, liveness, tempo, time_signature, valence)
 
     if energy == "low":
         colorscheme = "muted"
@@ -146,14 +146,14 @@ def generate_openai_prompt(audio_features):
     else:
         colorscheme = "bright"
     
-    if liveness == "low":
+    if danceability == "low":
+        emotion = "tranquil"
+    elif danceability == "medium":
         emotion = "serene"
-    elif liveness == "medium":
-        emotion = "comforting"
     else:
         emotion = "dynamic"
 
-    openai_prompt = "in 3-8 words, give me three different images or objects, separated by commas, that represent a song with " + acousticness + "accousticness , " + danceability + "danceability, " + energy + "energy, " + instrumentalness + "instrumentalness, " + liveness  + "liveness, tempo of " + str(tempo) + " bpm, time signature of " + str(time_signature) + ", and " + valence + "valence"
+    openai_prompt = "in 3-8 words, give me three different images or objects, separated by commas, that represent a song with " + acousticness + "accousticness , " + danceability + "danceability, " + energy + "energy, " + instrumentalness + "instrumentalness, " +  "tempo of " + str(tempo) + " bpm, time signature of " + str(time_signature) + ", and " + valence + "valence"
     
     return openai_prompt, colorscheme, emotion
 
