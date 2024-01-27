@@ -30,6 +30,7 @@ def index(request):
             emotion = openai_prompt[2]
 
             openai_response = get_openai_response(prompt)
+            print(openai_response)
             image_prompts = openai_response.split(",")
             
             context['image_url_1'] = generate_dalle_image(image_prompts[0], colorscheme, emotion)
